@@ -12,9 +12,12 @@ class Joypad(object):
 
     def set_axis(self, axis, value):
         self.joypad.set_axis(self._translate_axis(axis), value)
-    
+
     def set_button(self, button, value):
         self.joypad.set_button(button, value)
+
+    def set_pov(self, pov, value):
+        self.joypad.set_disc_pov(pov, value)
 
     def _translate_axis(self, name):
         return {
@@ -53,6 +56,8 @@ class JoypadServerHandler(socketserver.StreamRequestHandler):
                 joypad.set_axis(self.data[1], int(self.data[2]))
             elif self.data[0] == 'button':
                 joypad.set_button(int(self.data[1]), int(self.data[2]))
+            elif self.data[0] == 'pov':
+                joypad.set_pov(int(self.data[1]), int(self.data[2]))
 
             data = self.rfile.readline()
 
