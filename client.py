@@ -11,6 +11,9 @@ class Joypad(object):
         self.device = InputDevice(self.path)
         self.left_z = 0
         self.right_z = 0
+        # hack
+        self.pov_16 = 11
+        self.pov_17 = 13
 
     def read_loop(self):
         for event in self.device.read_loop():
@@ -60,7 +63,7 @@ class Joypad(object):
         if event.code == 2:
             self.left_z = event.value
         else:
-            self.right_z = this_z = event.value
+            self.right_z = event.value
 
         return 64 * (self.left_z - self.right_z) + 0x4000
 
