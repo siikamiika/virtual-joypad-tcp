@@ -61,11 +61,22 @@ class Joypad(object):
 
         return 64 * (self.left_z - self.right_z) + 0x4000
 
-    ### TODO
+    ### hack
     def _pov_code(self, event):
-        return 1
+        if event.code == 16:
+            if event.value == -1:
+                self.pov_16 = 11
+            elif event.value == 1:
+                self.pov_16 = 12
+            return self.pov_16
+        elif event.code == 17:
+            if event.value == -1:
+                self.pov_17 = 13
+            elif event.value == 1:
+                self.pov_17 = 14
+            return self.pov_17
 
-    ### TODO
+    ### hack
     def _pov_value(self, event):
         return abs(event.value)
 

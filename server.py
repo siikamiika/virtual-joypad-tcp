@@ -17,7 +17,8 @@ class Joypad(object):
         self.joypad.set_button(button, value)
 
     def set_pov(self, pov, value):
-        self.joypad.set_disc_pov(pov, value)
+        # self.joypad.set_disc_pov(pov, value)
+        self.joypad.set_button(pov, value)
 
     def _translate_axis(self, name):
         return {
