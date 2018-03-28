@@ -32,7 +32,7 @@ class Joypad(object):
                     3: 'RX',
                     4: 'RY',
                 }[event.code]
-                value = (event.value + 0x8000) // 2
+                value = (min(int(event.value * 1.20), 0x8000) + 0x8000) // 2
         elif type == 'pov':
             code = self._pov_code(event)
             value = self._pov_value(event)
