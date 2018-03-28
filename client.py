@@ -21,7 +21,8 @@ class Joypad(object):
         type = {ecodes.EV_ABS: 'axis', ecodes.EV_KEY: 'button'}[event.type]
         if event.code in (16, 17):
             type = 'pov'
-        if type == 'axis' and event.code not in (16, 17):
+
+        if type == 'axis':
             if event.code in (2, 5):
                 code = 'Z'
                 value = self._z_axis_value(event)
@@ -48,6 +49,8 @@ class Joypad(object):
                 315: 8,  # start
                 317: 9,  # left stick button
                 318: 10, # right stick button
+                # 11-14: POV hack
+                316: 15, # xbox button
             }[event.code]
             value = event.value
 
