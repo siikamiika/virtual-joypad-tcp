@@ -11,14 +11,17 @@ class Joypad(object):
         self.device = InputDevice(self.path)
         self.left_z = 0
         self.right_z = 0
-        # hack
-        self.pov_16 = 11
-        self.pov_17 = 13
+        self.pov_down = {
+            16: [],
+            17: [],
+        }
 
     def read_loop(self):
         for event in self.device.read_loop():
             if event.type in (ecodes.EV_KEY, ecodes.EV_ABS):
-                yield self._translate_event(event)
+                translated_event = self._translate_event(event)
+                if translated_event:
+                    yield translated_event
 
     def _translate_event(self, event):
         type = {ecodes.EV_ABS: 'axis', ecodes.EV_KEY: 'button'}[event.type]
@@ -40,6 +43,12 @@ class Joypad(object):
         elif type == 'pov':
             code = self._pov_code(event)
             value = self._pov_value(event)
+            if value == 0:
+                out = []
+                for _ in range(len(self.pov_down[code])):
+                    c = self.pov_down[code].pop(0)
+                    out.append(f'pov {c} 0\n')
+                return ''.join(out)
         else:
             code = {
                 304: 1,  # A
@@ -71,16 +80,22 @@ class Joypad(object):
     def _pov_code(self, event):
         if event.code == 16:
             if event.value == -1:
-                self.pov_16 = 11
+                self.pov_down[16].append(11)
+                return 11
             elif event.value == 1:
-                self.pov_16 = 12
-            return self.pov_16
+                self.pov_down[16].append(12)
+                return 12
+            else:
+                return 16
         elif event.code == 17:
             if event.value == -1:
-                self.pov_17 = 13
+                self.pov_down[17].append(13)
+                return 13
             elif event.value == 1:
-                self.pov_17 = 14
-            return self.pov_17
+                self.pov_down[17].append(14)
+                return 14
+            else:
+                return 17
 
     ### hack
     def _pov_value(self, event):
