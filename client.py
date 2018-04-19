@@ -3,6 +3,10 @@
 import socket
 from sys import argv
 from evdev import InputDevice, ecodes
+import os
+from os.path import dirname, realpath
+
+os.chdir(dirname(realpath(__file__)))
 
 class Joypad(object):
 
@@ -108,12 +112,16 @@ class JoypadClient(object):
         self.auth = auth
         self.joypad = joypad
         self.socket = socket.socket()
+        self.socket.settimeout(5)
         self.socket.connect((host, port))
         self.socket.send(auth + b'\n')
+        self.socket.settimeout(0)
 
     def start_loop(self):
         for event in self.joypad.read_loop():
+            self.socket.settimeout(1)
             self.socket.send(event.encode('utf-8'))
+            self.socket.settimeout(0)
 
 
 def main():
